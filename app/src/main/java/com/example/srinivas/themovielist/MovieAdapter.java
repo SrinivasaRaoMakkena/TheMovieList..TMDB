@@ -71,7 +71,7 @@ public class MovieAdapter extends BaseAdapter {
 
         Picasso.with(context).
                 load(MainActivity.listOfImages.get(position).toString())
-                .resize(metrics.widthPixels/2, metrics.heightPixels/2)
+                .resize(MainActivity.width,MainActivity.height)
 
                 .into(movieImage);
 

@@ -2,16 +2,20 @@ package com.example.srinivas.themovielist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.GradientDrawable;
 import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -45,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<URL> listOfImages;
     static ArrayList<Movie> listOfMovies;
 
+    static int width;
+    static int height;
+
+
     static Context context;
 
     MovieAdapter movieAdapter;
@@ -59,12 +67,10 @@ public class MainActivity extends AppCompatActivity {
         listOfMovies = new ArrayList<>();
 
 
-        movieAdapter = new MovieAdapter(this,listOfImages);
+        movieAdapter = new MovieAdapter(this, listOfImages);
 
         gridView = (GridView) findViewById(R.id.movieGrid);
         gridView.setAdapter(movieAdapter);
-
-
 
 
         //rating = new ArrayList<>();
@@ -72,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         //ArrayAdapter arrayAdapter = new ArrayAdapter();
         System.out.println(isOnline());
+
+        metrics();
 
         if (isOnline()) {
             DownloadMoviesData moviesData = new DownloadMoviesData();
@@ -106,11 +114,29 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             });
-        }else{
+        } else {
 
-            Log.i("network","No internet");
-            Toast.makeText(MainActivity.this,"No network Connection",Toast.LENGTH_SHORT).show();
+            Log.i("network", "No internet");
+            Toast.makeText(MainActivity.this, "No network Connection", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void metrics() {
+
+        DisplayMetrics metrics = new DisplayMetrics();
+
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(metrics);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            width = metrics.widthPixels / 2;
+            height = metrics.heightPixels/2;
+        } else {
+            width = metrics.widthPixels / 3;
+            height = metrics.heightPixels;
+
+        }
+
+
     }
 
     public boolean isOnline() {
@@ -181,9 +207,9 @@ public class MainActivity extends AppCompatActivity {
                 jObj = new JSONObject(s);
                 JSONArray jArray = jObj.getJSONArray("results");
                 Gson gson = new Gson();
-                for (int i=0;i<jArray.length();i++){
+                for (int i = 0; i < jArray.length(); i++) {
                     JSONObject jObject = jArray.getJSONObject(i);
-                    Movie movie = gson.fromJson(jObject.toString(),Movie.class);
+                    Movie movie = gson.fromJson(jObject.toString(), Movie.class);
 
                     listOfMovies.add(movie);
 
@@ -208,13 +234,12 @@ public class MainActivity extends AppCompatActivity {
                     Collections.sort(listOfMovies);
 
 
-
                     movieAdapter.notifyDataSetChanged();
                 }
-                if (listOfMovies.size() > 0){
-                    for(int i=0;i<listOfMovies.size();i++){
+                if (listOfMovies.size() > 0) {
+                    for (int i = 0; i < listOfMovies.size(); i++) {
                         try {
-                            URL url = new URL("http://image.tmdb.org/t/p/w185/"+listOfMovies.get(i).getPosterPath());
+                            URL url = new URL("http://image.tmdb.org/t/p/w185/" + listOfMovies.get(i).getPosterPath());
                             listOfImages.add(url);
 
 
