@@ -27,6 +27,8 @@ public class MovieAdapter extends BaseAdapter {
     private Context context; //context
     private ArrayList<URL> urls; //data source of the list adapter
 
+    ImageView movieImage;
+
     //public constructor
     public MovieAdapter(Context context, ArrayList<URL> urls) {
         this.context = context;
@@ -60,7 +62,7 @@ public class MovieAdapter extends BaseAdapter {
         //Item currentItem = (Item) getItem(position);
 
         // get the TextView for item name and item description
-        ImageView movieImage = (ImageView)
+         movieImage = (ImageView)
                 convertView.findViewById(R.id.moviePoster);
         DisplayMetrics metrics = new DisplayMetrics();
 
@@ -69,15 +71,10 @@ public class MovieAdapter extends BaseAdapter {
 
         Picasso.with(context).
                 load(MainActivity.listOfImages.get(position).toString())
-                .resize(metrics.widthPixels/2, 800)
+                .resize(metrics.widthPixels/2, metrics.heightPixels/2)
 
                 .into(movieImage);
-        //   TextView textViewItemDescription = (TextView)
-        //          convertView.findViewById(R.id.text_view_item_description);
 
-        //sets the text for item name and item description from the current item object
-        // textViewItemName.setText(currentItem.getItemName());
-        // textViewItemDescription.setText(currentItem.getItemDescription());
 
         // returns the view for the current row
         return convertView;

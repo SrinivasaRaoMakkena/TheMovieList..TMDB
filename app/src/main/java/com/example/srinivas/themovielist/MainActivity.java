@@ -1,12 +1,22 @@
 package com.example.srinivas.themovielist;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -17,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,13 +35,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity {
 
     GridView gridView;
     static ArrayList<URL> listOfImages;
-    static ArrayList<String> title;
-    static ArrayList<String> rating;
+    static ArrayList<Movie> listOfMovies;
+
     static Context context;
 
     MovieAdapter movieAdapter;
@@ -42,17 +56,68 @@ public class MainActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         listOfImages = new ArrayList<>();
+        listOfMovies = new ArrayList<>();
+
+
         movieAdapter = new MovieAdapter(this,listOfImages);
 
         gridView = (GridView) findViewById(R.id.movieGrid);
         gridView.setAdapter(movieAdapter);
 
+
+
+
+        //rating = new ArrayList<>();
+
+
         //ArrayAdapter arrayAdapter = new ArrayAdapter();
+        System.out.println(isOnline());
 
-        DownloadMoviesData moviesData = new DownloadMoviesData();
-        moviesData.execute();
+        if (isOnline()) {
+            DownloadMoviesData moviesData = new DownloadMoviesData();
+            moviesData.execute();
 
 
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    // URL imageView = (URL) gridView.getItemAtPosition(position);
+
+
+//               // Bitmap bm = imageView.getDrawingCache();
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                byte[] byteArray = stream.toByteArray();
+                    Collections.sort(listOfMovies);
+
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                    // intent.putExtra("title",title.get(position));
+                    // intent.putExtra("rate",rating.get(position));
+
+                    Bundle b = new Bundle();
+                    b.putParcelable("movie", listOfMovies.get(position));
+                    intent.putExtras(b);
+                    // intent.putExtra("url",listOfMovies.get(position));
+                    // Bitmap b=null; // your bitmap
+
+                    //intent.putExtra("image",byteArray);
+                    startActivity(intent);
+                }
+
+            });
+        }else{
+
+            Log.i("network","No internet");
+            Toast.makeText(MainActivity.this,"No network Connection",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public class DownloadMoviesData extends AsyncTask<Void, Void, String> {
@@ -118,21 +183,48 @@ public class MainActivity extends AppCompatActivity {
                 Gson gson = new Gson();
                 for (int i=0;i<jArray.length();i++){
                     JSONObject jObject = jArray.getJSONObject(i);
+                    Movie movie = gson.fromJson(jObject.toString(),Movie.class);
 
-                    try {
-                        URL url = new URL("http://image.tmdb.org/t/p/w185/"+jObject.getString("poster_path"));
+                    listOfMovies.add(movie);
 
-                        listOfImages.add(url);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
+                    Collections.sort(listOfMovies);
 
-                    System.out.println(jObject.getString("original_title"));
-                    System.out.println(jObject.getString("poster_path"));
+//                    try {
+//
+//                        URL url = new URL("http://image.tmdb.org/t/p/w185/"+movie.getPosterPath());
+//
+//                        listOfImages.add(url);
+//                    } catch (MalformedURLException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    title.add(jObject.getString("original_title"));
+//                    rating.add(jObject.getString("vote_average"));
+//
+//                    System.out.println(jObject.getString("original_title"));
+//                    System.out.println(jObject.getString("poster_path"));
                     //gson.fromJson(jObject,Movie.class);
+
+                    Collections.sort(listOfMovies);
+
+
 
                     movieAdapter.notifyDataSetChanged();
                 }
+                if (listOfMovies.size() > 0){
+                    for(int i=0;i<listOfMovies.size();i++){
+                        try {
+                            URL url = new URL("http://image.tmdb.org/t/p/w185/"+listOfMovies.get(i).getPosterPath());
+                            listOfImages.add(url);
+
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+                movieAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
