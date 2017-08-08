@@ -160,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
             try {
                 url = new URL("http://api.themoviedb.org/3/movie/popular?api_key=a6ff5301f0ec4b238a7c143f963dab9e");
+//reviews  // http://api.themoviedb.org/3/movie/211672/reviews?api_key=a6ff5301f0ec4b238a7c143f963dab9e
+// trailers      //https://www.youtube.com/watch?v=key (eg: jc86EFjLFV4 for minions)
+                //http://api.themoviedb.org/3/movie/211672/videos?api_key=a6ff5301f0ec4b238a7c143f963dab9e
 
                 urlConnection = (HttpURLConnection) url.openConnection();
 

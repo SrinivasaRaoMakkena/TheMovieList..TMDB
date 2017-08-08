@@ -1,11 +1,16 @@
 package com.example.srinivas.themovielist;
 
+import android.content.Context;
 import android.content.Intent;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -77,4 +82,6 @@ speakOut();
             Log.e("TTS", "Initilization Failed!");
         }
     }
+
+
 }
