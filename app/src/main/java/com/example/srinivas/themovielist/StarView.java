@@ -7,13 +7,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.SurfaceView;
 import android.view.View;
 
 /**
  * Created by Srinivas on 8/8/2017.
  */
 
-public class StarView extends View {
+public class StarView extends View  {
     Paint paint;
 
     Path path;
@@ -43,7 +44,7 @@ public class StarView extends View {
         paint.setStyle(Paint.Style.STROKE);
 
         paint1 = new Paint();
-        paint1.setColor(Color.BLACK);
+        paint1.setColor(Color.BLUE);
 
          path = new Path();
     }

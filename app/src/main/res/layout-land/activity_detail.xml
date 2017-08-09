@@ -88,10 +88,29 @@
 
                 </LinearLayout>
 
-                <com.example.srinivas.themovielist.StarView
-                    android:layout_width="0dp"
-                    android:layout_height="150dp"
-                    android:layout_weight="1" />
+                <!--<com.example.srinivas.themovielist.StarView-->
+                    <!--android:id="@+id/starView"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="150dp"-->
+                    <!--android:layout_weight="1" />-->
+                <ImageButton android:id="@+id/favorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:src="@drawable/star"
+                    android:background="#00ffffff"
+                    android:onClick="onToggleStar"/>
+                <TextView
+                    android:id="@+id/markAsFav"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/favorite"
+                    android:layout_margin="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/images"
+                    android:text="Mark as Favourite"
+                    android:textColor="#d41515"
+                    android:layout_gravity="center"
+                    android:textSize="10sp" />
             </LinearLayout>
             <TextView
                 android:id="@+id/overview"
