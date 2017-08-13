@@ -1,13 +1,10 @@
-package com.example.srinivas.themovielist;
+package com.example.srinivas.themovielist.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by Srinivas on 7/24/2017.
@@ -30,12 +27,17 @@ public class Movie implements Parcelable,Comparable<Movie> {
     @SerializedName("vote_average")
     private  String rating;
 
+    @SerializedName("id")
+    private  long movieId;
+
+
     protected Movie(Parcel in) {
         originalTitle = in.readString();
         posterPath = in.readString();
         releaseDate = in.readString();
         overview = in.readString();
         rating = in.readString();
+        movieId = in.readLong();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -62,16 +64,23 @@ public class Movie implements Parcelable,Comparable<Movie> {
 
 
 
-    public Movie(String originalTitle, String posterPath, String releaseDate, String overview, String rating, String url) {
+    public Movie(String originalTitle, String posterPath, String releaseDate, String overview, String rating, String url,long id) {
         this.originalTitle = originalTitle;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
         this.overview = overview;
         this.rating = rating;
+        this.movieId = id;
 
     }
 
+    public long getMovieId() {
+        return movieId;
+    }
 
+    public void setMovieId(long movieId) {
+        this.movieId = movieId;
+    }
 
     public String getOverview() {
         return overview;
@@ -129,6 +138,7 @@ public class Movie implements Parcelable,Comparable<Movie> {
         dest.writeString(releaseDate);
         dest.writeString(overview);
         dest.writeString(rating);
+        dest.writeLong(movieId);
     }
 
     @Override

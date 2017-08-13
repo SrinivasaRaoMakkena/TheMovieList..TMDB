@@ -3,10 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context="com.example.srinivas.themovielist.DetailActivity">
 
         <TextView
@@ -58,25 +59,19 @@
             android:textColor="#223fff"
             android:textSize="15sp" />
 
-
-<!--<com.example.srinivas.themovielist.StarView-->
-    <!--android:id="@+id/starView"-->
-    <!--android:layout_below="@+id/releaseDate"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="200dp"-->
-    <!--android:layout_toRightOf="@+id/images"-->
-
-    <!--/>-->
-        <ImageButton android:id="@+id/favorite"
+        <!--/>-->
+        <ImageButton
+            android:id="@+id/favorite"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:src="@drawable/star"
-            android:background="#00ffffff"
-            android:layout_toRightOf="@+id/images"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/releaseDate"
-            android:paddingTop="40dp"
+            android:layout_toRightOf="@+id/images"
+            android:background="#00ffffff"
+            android:onClick="onToggleStar"
             android:paddingLeft="20dp"
-            android:onClick="onToggleStar"/>
+            android:paddingTop="40dp"
+            android:src="@drawable/star" />
+
         <TextView
             android:id="@+id/markAsFav"
             android:layout_width="match_parent"
@@ -100,5 +95,48 @@
             android:textColor="#0d0d0d"
             android:textSize="10sp" />
 
+        <View
+            android:id="@+id/lineHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@+id/overview"
+            android:background="#000" />
+
+        <TextView
+            android:id="@+id/reviewTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lineHorizontal"
+            android:text="Reviews"
+            android:textColor="#121112" />
+
+        <ListView
+            android:id="@+id/reviewList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/reviewTV"
+            android:padding="10dp" />
+
+        <View
+            android:id="@+id/lineBreak2"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@+id/reviewList"
+            android:background="#000" />
+
+        <TextView
+            android:id="@+id/trailerTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lineBreak2"
+            android:text="Trailers"
+            android:textColor="#121112" />
+
+        <ListView
+            android:id="@+id/trailersListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/trailerTV" />
     </RelativeLayout>
+
 </ScrollView>

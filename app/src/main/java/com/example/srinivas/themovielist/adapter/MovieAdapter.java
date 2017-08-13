@@ -1,4 +1,4 @@
-package com.example.srinivas.themovielist;
+package com.example.srinivas.themovielist.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.example.srinivas.themovielist.MainActivity;
+import com.example.srinivas.themovielist.R;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -71,7 +73,7 @@ public class MovieAdapter extends BaseAdapter {
 
         Picasso.with(context).
                 load(MainActivity.listOfImages.get(position).toString())
-                .resize(MainActivity.width,MainActivity.height)
+                .resize(com.example.srinivas.themovielist.MainActivity.width,MainActivity.height)
 
                 .into(movieImage);
 

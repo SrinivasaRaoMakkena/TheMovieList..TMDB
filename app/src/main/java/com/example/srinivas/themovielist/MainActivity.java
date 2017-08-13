@@ -3,9 +3,6 @@ package com.example.srinivas.themovielist;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.drawable.GradientDrawable;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -13,17 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.srinivas.themovielist.adapter.MovieAdapter;
+import com.example.srinivas.themovielist.model.Movie;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,26 +26,22 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity {
 
     GridView gridView;
-    static ArrayList<URL> listOfImages;
+   public  static ArrayList<URL> listOfImages;
     static ArrayList<Movie> listOfMovies;
 
-    static int width;
-    static int height;
+    public static int width;
+    public static int height;
 
 
     static Context context;
