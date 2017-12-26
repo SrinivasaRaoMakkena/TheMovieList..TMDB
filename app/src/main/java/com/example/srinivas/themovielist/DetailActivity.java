@@ -4,9 +4,11 @@ package com.example.srinivas.themovielist;
 import android.content.Intent;
 
 
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,13 @@ import com.example.srinivas.themovielist.adapter.TrailersAdapter;
 import com.example.srinivas.themovielist.model.Movie;
 import com.example.srinivas.themovielist.model.MovieReviews;
 import com.example.srinivas.themovielist.model.MovieTrailers;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.appinvite.FirebaseAppInvite;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -61,7 +70,7 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
 
 
     ListView trailersListView;
-   public static List<String> trailerNames;
+    public static List<String> trailerNames;
     List<MovieTrailers> listOfMovieTrailersObject;
     TrailersAdapter trailersAdapter;
 
@@ -93,6 +102,31 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
         reviewsArrayAdapter = new ReviewsAdapter(this);
         reviewListView.setAdapter(reviewsArrayAdapter);
 
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        if (pendingDynamicLinkData != null){
+                            FirebaseAnalytics.getInstance(DetailActivity.this);
+                            Uri deepLink = pendingDynamicLinkData.getLink();
+                            System.out.println("deep link url: "+ deepLink);
+                            //logic to redeem code here.
+
+                            FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(pendingDynamicLinkData);
+                            if(invite != null){
+                                if (!invite.getInvitationId().isEmpty()){
+                                    System.out.println("deep link url with invitation id: "+deepLink.toString()+invite.getInvitationId());
+                                }
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Error : "+e.getMessage());
+                    }
+});
 
 //save status of star (favourite or not)
         if (savedInstanceState != null) {
@@ -111,27 +145,30 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
 
 
         Intent intent = getIntent();
-        movie = intent.getParcelableExtra("movie");
-        title.setText(movie.getOriginalTitle());
-        rating.setText("rating\n" + movie.getRating() + "/10");
+        if (intent != null) {
 
-        movieReleaseDate.setText("release date\n" + movie.getReleaseDate());
-        overView.setText(movie.getOverview());
+            movie = intent.getParcelableExtra("movie");
+            if (movie != null)
+            title.setText(movie.getOriginalTitle());
+            rating.setText("rating\n" + movie.getRating() + "/10");
 
-        Log.i("url", movie.createImageURl() + "");
+            movieReleaseDate.setText("release date\n" + movie.getReleaseDate());
+            overView.setText(movie.getOverview());
 
-        Picasso.with(this).
-                load(movie.createImageURl().toString())
-                .into(v);
+            Log.i("url", movie.createImageURl() + "");
+
+            Picasso.with(this).
+                    load(movie.createImageURl().toString())
+                    .into(v);
 //        byte[] byteArray = getIntent().getByteArrayExtra("image");
 //
 //       Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
 
-        // v.setImageBitmap(bmp);
+            // v.setImageBitmap(bmp);
 
-        //speakOut();
-
+            //speakOut();
+        }
 
         DownloadReviewsAndTrailers reviews = new DownloadReviewsAndTrailers();
         reviews.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -158,9 +195,9 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
                 Intent intent = new Intent(DetailActivity.this, TrailersActivity.class);
                 //Bundle b = new Bundle();
                 //b.putParcelable("review", listOfMovieReviewsObject.get(position));
-               // intent.putExtras(b);
+                // intent.putExtras(b);
 
-                intent.putExtra("key",listOfMovieTrailersObject.get(position).getYoutubeLinkKey());
+                intent.putExtra("key", listOfMovieTrailersObject.get(position).getYoutubeLinkKey());
                 startActivity(intent);
             }
         });
@@ -250,6 +287,31 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
 
     }
 
+    public void shareLongDynamicLink(View view) {
+        Intent i = new Intent();
+        String msg = "visit Google home " + buildDynamicLink();
+        i.setAction(Intent.ACTION_SEND);
+        i.putExtra(Intent.EXTRA_TEXT, msg);
+        i.setType("text/plain");
+        startActivity(Intent.createChooser(i, "Send your email in:"));
+
+    }
+
+    private String buildDynamicLink() {
+        DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse("https://google.com/"))
+                .setDynamicLinkDomain("ckr5u.app.goo.gl")
+                // Open links with this app on Android
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                // Open links with com.example.ios on iOS
+                .setIosParameters(new DynamicLink.IosParameters.Builder("com.example.ios").build())
+                .buildDynamicLink();
+
+        Uri dynamicLinkUri = dynamicLink.getUri();
+        return dynamicLinkUri.toString();
+
+    }
+
 
     public class DownloadReviewsAndTrailers extends AsyncTask<Void, Void, String> {
 
@@ -316,7 +378,7 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
             JSONObject jObj = null;
             try {
                 jObj = new JSONObject(s);
-                if (jObj !=null) {
+                if (jObj != null) {
                     JSONArray jArray = jObj.getJSONArray("results");
                     System.out.println(jArray.length());
                     Gson gson = new Gson();
@@ -403,7 +465,7 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
 
                 //InputStreamReader inputStream = new InputStreamReader(in);
 
-                 System.out.println("output "+in);
+                System.out.println("output " + in);
 
 
                 BufferedReader bReader = new BufferedReader(
@@ -417,7 +479,7 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
 
                 in.close();
                 String result = sBuilder.toString();
-                System.out.println("result "+result);
+                System.out.println("result " + result);
                 return result;
 
 
@@ -445,11 +507,10 @@ public class DetailActivity extends AppCompatActivity implements TextToSpeech.On
             try {
 
 
-
-                    jObj = new JSONObject(s);
+                jObj = new JSONObject(s);
                 if (jObj != null) {
                     JSONArray jArray = jObj.getJSONArray("results");
-                    System.out.println("length "+jArray.length());
+                    System.out.println("length " + jArray.length());
                     Gson gson = new Gson();
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject jObject = jArray.getJSONObject(i);

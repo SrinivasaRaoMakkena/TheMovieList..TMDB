@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "573720329942",
+    "firebase_url": "https://themovielist-25245.firebaseio.com",
+    "project_id": "themovielist-25245",
+    "storage_bucket": "themovielist-25245.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573720329942:android:8be1ad9d96384752",
+        "android_client_info": {
+          "package_name": "com.example.srinivas.themovielist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573720329942-as13n9l3osocno6v02lsvrrpnih2ck3j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcW9Ch4mGOZFHGdA8R0w5eWuucDT1h_lM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
